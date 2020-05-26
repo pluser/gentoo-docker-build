@@ -30,7 +30,7 @@ jobs:
       - name: Build the image
         env:
           TARGET: stage3-amd64-systemd
-        run: ./bush.sh
+        run: ./build.sh
         shell: bash
         working-directory: ./official
       - name: Push to GitHub Packages
