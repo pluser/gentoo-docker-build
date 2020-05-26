@@ -41,7 +41,8 @@ jobs:
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${REGISTORY} -u ${{ github.actor }} --password-stdin
           IMAGE_ID=${REGISTORY}/${{ github.repository }}/${IMAGE_NAME}
-          docker push ${ORG}/${IMAGE_ID}:latest
+          docker tag ${ORG}/${IMAGE_NAME} ${IMAGE_ID}:latest
+          docker push ${IMAGE_ID}:latest
         shell: bash
 
   build_push_gentoo-amd64-systemd:
