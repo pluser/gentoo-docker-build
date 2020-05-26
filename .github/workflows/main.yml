@@ -1,4 +1,4 @@
-name: Build and Publish Gentoo Docker image
+name: Build and Publish Gentoo Docker Image
 
 on: release
 
@@ -48,7 +48,7 @@ jobs:
           org: gentoo
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${{ env.docker_registory }} -u ${{ github.actor }} --password-stdin
-          docker tag ${{ env.org }}/${{ env.image_name }} ${{ env.image_id }}:latest
+          docker tag ${{ env.org }}/${{ env.image_name }} ${{ env.docker_registory }}/${{ github.repository }}/${{ env.image_name }}:latest
           docker push ${{ env.image_id }}:latest
         shell: bash
 
