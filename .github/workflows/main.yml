@@ -27,6 +27,7 @@ jobs:
         with:
           repository:  gentoo/gentoo-docker-images 
           path: official
+          submodules: true
       - name: Build the image
         env:
           TARGET: stage3-amd64-systemd
