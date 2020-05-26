@@ -16,6 +16,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: docker.pkg.github.com
           repository: pluser/gentoo-docker-build-by-github/gentoo-amd64
+          build_args: gentoo/stage3-amd64
           tag_with_ref: true
 
   build_push_stage3-amd64-systemd:
@@ -55,9 +56,14 @@ jobs:
         uses: actions/checkout@v2
       - name: Push to GitHub Packages
         uses: docker/build-push-action@v1
+        env:
+          REGISTORY: docker.pkg.github.com
+          TARGET_NAME: gentoo-amd64-systemd
+          BASE_IMAGE: stage3-amd64-systemd
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-          registry: docker.pkg.github.com
-          repository: pluser/gentoo-docker-build-by-github/gentoo-amd64-systemd
+          registry: ${REGISTORY}
+          repository: ${{ github.actor }}/${{ github.repository }}/${TARGET_NAME}
+          build_args: BASEIMG=${{ github.actor }}/${{ github.repository }}/${BASE_IMAGE}
           tag_with_ref: true
