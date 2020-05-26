@@ -36,7 +36,7 @@ jobs:
         working-directory: ./official
       - name: Push to GitHub Packages
         env:
-          IMAGE_ID: stage3-amd64-systemd
+          IMAGE_NAME: stage3-amd64-systemd
           ORG: gentoo
           REGISTORY: docker.pkg.github.com
         run: |
