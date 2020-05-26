@@ -19,7 +19,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: docker.pkg.github.com
           repository: pluser/gentoo-docker-build-by-github/gentoo-amd64
-          build_args: base_image=gentoo/stage3-amd64:latest
+          build_args: 'base_image=gentoo/stage3-amd64:latest'
           tag_with_ref: true
 
   build_push_stage3-amd64-systemd:
@@ -48,12 +48,12 @@ jobs:
           org: gentoo
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${{ env.docker_registory }} -u ${{ github.actor }} --password-stdin
-          docker tag ${{ env.org }}/${{ env.image_name }} ${{ env.docker_registory }}/${{ github.repository }}/${{ env.image_name }}:latest
+          docker tag ${{ env.org }}/${{ env.image_name }} ${{ env.image_id }}:latest
           docker push ${{ env.image_id }}:latest
         shell: bash
 
   build_push_gentoo-amd64-systemd:
-    name: gentoo-am64-systemd
+    name: gentoo-amd64-systemd
     needs: build_push_stage3-amd64-systemd
     runs-on: ubuntu-latest
     steps:
@@ -69,5 +69,5 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: ${{ env.docker_registory }}
           repository: ${{ github.repository }}/${{ env.target_name }}
-          build_args: base_image=/${{ github.repository }}/${{ env.base_name }}
+          build_args: 'base_image=${{ github.repository }}/${{ env.base_name }}'
           tag_with_ref: true
