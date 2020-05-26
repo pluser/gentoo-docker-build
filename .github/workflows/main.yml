@@ -25,6 +25,10 @@ jobs:
   build_push_stage3-amd64-systemd:
     name: stage3-amd64-systemd
     runs-on: ubuntu-latest
+    env:
+      image_name: stage3-amd64-systemd
+    outputs:
+      image_name: ${{ env.image_name }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
@@ -40,7 +44,6 @@ jobs:
         working-directory: ./official
       - name: Push to GitHub Packages
         env:
-          image_name: stage3-amd64-systemd
           image_id: ${{ env.docker_registory }}/${{ github.repository }}/${{ env.image_name }}
           org: gentoo
         run: |
@@ -60,7 +63,7 @@ jobs:
         uses: docker/build-push-action@v1
         env:
           target_name: gentoo-amd64-systemd
-          base_name: stage3-amd64-systemd
+          base_name: ${{ needs.build_push_stage3-amd64-systemd.outputs.image_name }}
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
