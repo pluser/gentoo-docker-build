@@ -13,7 +13,7 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v2
       - name: Build and Push to GitHub Packages
-        uses: docker/build-push-action@v1
+        uses: docker/build-push-action@v1.1.0
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
@@ -60,7 +60,7 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v2
       - name: Push to GitHub Packages
-        uses: docker/build-push-action@v1
+        uses: docker/build-push-action@v1.1.0
         env:
           target_name: gentoo-amd64-systemd
           base_name: ${{ needs.build_push_stage3-amd64-systemd.outputs.image_name }}
@@ -68,6 +68,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: ${{ env.docker_registory }}
-          repository: ${{ github.actor }}/${{ github.repository }}/${{ env.target_name }}
-          build_args: base_image=${{ github.actor }}/${{ github.repository }}/${{ env.base_name }}
+          repository: ${{ github.repository }}/${{ env.target_name }}
+          build_args: base_image=/${{ github.repository }}/${{ env.base_name }}
           tag_with_ref: true
