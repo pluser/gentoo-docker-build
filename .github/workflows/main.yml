@@ -38,7 +38,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: docker.pkg.github.com
           repository: pluser/gentoo-docker-build-by-github/stage3-amd64-systemd
-          build_args: SUFFIX=systemd
+          build_args: ARCH=amd64,MICROARCH=amd64,BOOTSTRAP=,SUFFIX=-systemd
           dockerfile: official/stage3.Dockerfile
           tag_with_ref: true
 
