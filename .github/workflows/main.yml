@@ -4,14 +4,12 @@ name: Publish Docker image
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
-on:
-  release:
-    types: [published]
+on: release
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  push_to_registry:
-    name: Push Docker image to GitHub Packages
+  make_gentoo-amd64:
+    name: Push Docker image to GitHub Packages with Portage (AMD64)
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
@@ -22,6 +20,25 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: docker.pkg.github.com
-          repository: pluser/gentoo-docker-build-by-github/gentoo-image
+          repository: pluser/gentoo-docker-build-by-github/gentoo-amd64
+          tag_with_ref: true
+  make_gentoo-amd64-systemd:
+    name: Push Docker image to GitHub Packages (AMD64, systemd)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+        with:
+          repository:  gentoo/gentoo-docker-images 
+          path: official
+      - name: Push to GitHub Packages
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          repository: pluser/gentoo-docker-build-by-github/stage3-amd64-systemd
+          build_args: SUFFIX=systemd
+          dockerfile: official/stage3.Dockerfile
           tag_with_ref: true
 
