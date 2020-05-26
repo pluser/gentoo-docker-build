@@ -2,6 +2,9 @@ name: Build and Publish Gentoo Docker image
 
 on: release
 
+env:
+  docker_registory: docker.pkg.github.com
+
 jobs:
   build_push_gentoo-amd64:
     name: gentoo-amd64
@@ -16,7 +19,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: docker.pkg.github.com
           repository: pluser/gentoo-docker-build-by-github/gentoo-amd64
-          build_args: gentoo/stage3-amd64
+          build_args: BASEIMG=gentoo/stage3-amd64
           tag_with_ref: true
 
   build_push_stage3-amd64-systemd:
@@ -37,14 +40,13 @@ jobs:
         working-directory: ./official
       - name: Push to GitHub Packages
         env:
-          IMAGE_NAME: stage3-amd64-systemd
-          ORG: gentoo
-          REGISTORY: docker.pkg.github.com
+          image_name: stage3-amd64-systemd
+          image_id: ${{ env.docker_registory }}/${{ github.repository }}/${{ env.image_name }}
+          org: gentoo
         run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${REGISTORY} -u ${{ github.actor }} --password-stdin
-          IMAGE_ID=${REGISTORY}/${{ github.repository }}/${IMAGE_NAME}
-          docker tag ${ORG}/${IMAGE_NAME} ${IMAGE_ID}:latest
-          docker push ${IMAGE_ID}:latest
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${{ env.docker_registory }} -u ${{ github.actor }} --password-stdin
+          docker tag ${{ env.org }}/${{ env.image_name }} ${{ env.image_id }}:latest
+          docker push ${{ env.image_id }}:latest
         shell: bash
 
   build_push_gentoo-amd64-systemd:
@@ -57,13 +59,12 @@ jobs:
       - name: Push to GitHub Packages
         uses: docker/build-push-action@v1
         env:
-          REGISTORY: docker.pkg.github.com
-          TARGET_NAME: gentoo-amd64-systemd
-          BASE_IMAGE: stage3-amd64-systemd
+          target_name: gentoo-amd64-systemd
+          base_name: stage3-amd64-systemd
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-          registry: ${REGISTORY}
-          repository: ${{ github.actor }}/${{ github.repository }}/${TARGET_NAME}
-          build_args: BASEIMG=${{ github.actor }}/${{ github.repository }}/${BASE_IMAGE}
+          registry: ${{ env.docker_registory }}
+          repository: ${{ github.actor }}/${{ github.repository }}/${{ env.target_name }}
+          build_args: BASEIMG=${{ github.actor }}/${{ github.repository }}/${{ env.base_name }}
           tag_with_ref: true
