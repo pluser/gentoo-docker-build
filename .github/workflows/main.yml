@@ -1,15 +1,10 @@
-# This is a basic workflow to help you get started with Actions
+name: Build and Publish Gentoo Docker image
 
-name: Publish Docker image
-
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
 on: release
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  make_gentoo-amd64:
-    name: Push Docker image to GitHub Packages with Portage (AMD64)
+  build_push_gentoo-amd64:
+    name: gentoo-amd64
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
@@ -22,8 +17,9 @@ jobs:
           registry: docker.pkg.github.com
           repository: pluser/gentoo-docker-build-by-github/gentoo-amd64
           tag_with_ref: true
-  make_gentoo-amd64-systemd:
-    name: Push Docker image to GitHub Packages (AMD64, systemd)
+
+  build_push_stage3-amd64-systemd:
+    name: stage3-amd64-systemd
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
@@ -31,14 +27,33 @@ jobs:
         with:
           repository:  gentoo/gentoo-docker-images 
           path: official
+      - name: Build the image
+        env:
+          TARGET: stage3-amd64-systemd
+        run: ./bush.sh
+        shell: bash
+        working-directory: ./official
+      - name: Push to GitHub Packages
+        env:
+          IMAGE_ID: stage3-amd64-systemd
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+          IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME
+          docker push $IMAGE_ID:latest
+        shell: bash
+
+  build_push_gentoo-amd64-systemd:
+    name: gentoo-am64-systemd
+    needs: build_push_stage3-amd64-systemd
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
       - name: Push to GitHub Packages
         uses: docker/build-push-action@v1
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: docker.pkg.github.com
-          repository: pluser/gentoo-docker-build-by-github/stage3-amd64-systemd
-          build_args: ARCH=amd64,MICROARCH=amd64,BOOTSTRAP=,SUFFIX=-systemd
-          dockerfile: official/stage3.Dockerfile
+          repository: pluser/gentoo-docker-build-by-github/gentoo-amd64-systemd
           tag_with_ref: true
-
