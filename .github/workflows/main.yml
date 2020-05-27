@@ -14,13 +14,15 @@ jobs:
         uses: actions/checkout@v2
       - name: Build and Push to GitHub Packages
         uses: docker/build-push-action@v1.1.0
+        env:
+          target_image: gentoo/gentoo-amd64
+          base_image: gentoo/stage3-amd64
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-          registry: docker.pkg.github.com
-          repository: pluser/gentoo-docker-build-by-github/gentoo-amd64
-          build_args: 'base_image=gentoo/stage3-amd64:latest'
-          tag_with_ref: true
+          registry: ${{ env.docker_registory }}
+          repository: ${{ github.repository }}/${{ env.target_name }}
+          build_args: base_image=${{ env.base_image }}
 
   build_push_stage3-amd64-systemd:
     name: stage3-amd64-systemd
@@ -28,7 +30,7 @@ jobs:
     env:
       image_name: stage3-amd64-systemd
     outputs:
-      image_name: ${{ env.image_name }}
+      image: ${{ env.docker_registory }}/${{ github.repository }}/${{ env.image_name }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
@@ -63,11 +65,10 @@ jobs:
         uses: docker/build-push-action@v1.1.0
         env:
           target_name: gentoo-amd64-systemd
-          base_name: ${{ needs.build_push_stage3-amd64-systemd.outputs.image_name }}
+          base_image: ${{ needs.build_push_stage3-amd64-systemd.outputs.image }}
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: ${{ env.docker_registory }}
           repository: ${{ github.repository }}/${{ env.target_name }}
-          build_args: 'base_image=${{ env.docker_registory }}/${{ github.repository }}/${{ env.base_name }}'
-          tag_with_ref: true
+          build_args: base_image=${{ env.base_image }}
