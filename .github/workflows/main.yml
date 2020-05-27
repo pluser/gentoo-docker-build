@@ -10,6 +10,8 @@ jobs:
     name: gentoo-amd64
     runs-on: ubuntu-latest
     steps:
+      - name: Get current date
+        run: echo "::set-env name=date::$(date +'%Y%m%d')"
       - name: Check out the repo
         uses: actions/checkout@v2
       - name: Build and Push to GitHub Packages
@@ -23,6 +25,7 @@ jobs:
           registry: ${{ env.docker_registory }}
           repository: ${{ github.repository }}/${{ env.target_name }}
           build_args: base_image=${{ env.base_image }}
+          tags: latest, ${{ env.date }}
 
   build_push_stage3-amd64-systemd:
     name: stage3-amd64-systemd
@@ -32,6 +35,8 @@ jobs:
     outputs:
       image: ${{ env.docker_registory }}/${{ github.repository }}/${{ env.image_name }}
     steps:
+      - name: Get current date
+        run: echo "::set-env name=date::$(date +'%Y%m%d')"
       - name: Check out the repo
         uses: actions/checkout@v2
         with:
@@ -50,7 +55,9 @@ jobs:
           org: gentoo
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${{ env.docker_registory }} -u ${{ github.actor }} --password-stdin
-          docker tag ${{ env.org }}/${{ env.image_name }} ${{ env.image_id }}:latest
+          docker tag ${{ env.org }}/${{ env.image_name }} ${{ env.image_id }}:${{ env.date }}
+          docker tag ${{ env.image_id }}:${{ env.date }} ${{env.image_id}}:latest
+          docker push ${{ env.image_id }}:${{ env.date }}
           docker push ${{ env.image_id }}:latest
         shell: bash
 
@@ -59,6 +66,8 @@ jobs:
     needs: build_push_stage3-amd64-systemd
     runs-on: ubuntu-latest
     steps:
+      - name: Get current date
+        run: echo "::set-env name=date::$(date +'%Y%m%d')"
       - name: Check out the repo
         uses: actions/checkout@v2
       - name: Build and Push to GitHub Packages
@@ -72,3 +81,4 @@ jobs:
           registry: ${{ env.docker_registory }}
           repository: ${{ github.repository }}/${{ env.target_name }}
           build_args: base_image=${{ env.base_image }}
+          tags: latest, ${{ env.date }}
