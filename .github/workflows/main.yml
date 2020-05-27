@@ -59,7 +59,7 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
-      - name: Push to GitHub Packages
+      - name: Build and Push to GitHub Packages
         uses: docker/build-push-action@v1.1.0
         env:
           target_name: gentoo-amd64-systemd
@@ -69,5 +69,5 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: ${{ env.docker_registory }}
           repository: ${{ github.repository }}/${{ env.target_name }}
-          build_args: 'base_image=${{ github.repository }}/${{ env.base_name }}'
+          build_args: 'base_image=${{ env.docker_registory }}/${{ github.repository }}/${{ env.base_name }}'
           tag_with_ref: true
