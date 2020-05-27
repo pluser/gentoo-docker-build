@@ -1,6 +1,8 @@
 name: Build and Publish Gentoo Docker Image
 
-on: release
+on:
+  schedule:
+    - cron: '20 4 * * *'
 
 env:
   docker_registory: docker.pkg.github.com
