@@ -27,7 +27,7 @@ jobs:
           registry: ${{ env.docker_registory }}
           repository: ${{ github.repository }}/${{ env.target_image }}
           build_args: base_image=${{ env.base_image }}
-          tags: latest, ${{ env.date }}
+          tags: ${{ env.date }}, latest
 
   build_push_stage3-amd64-systemd:
     name: stage3-amd64-systemd
@@ -83,4 +83,4 @@ jobs:
           registry: ${{ env.docker_registory }}
           repository: ${{ github.repository }}/${{ env.target_name }}
           build_args: base_image=${{ env.base_image }}
-          tags: latest, ${{ env.date }}
+          tags: ${{ env.date }}, latest
