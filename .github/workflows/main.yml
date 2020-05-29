@@ -19,7 +19,7 @@ jobs:
       - name: Build and Push to GitHub Packages
         uses: docker/build-push-action@v1.1.0
         env:
-          target_image: gentoo/gentoo-amd64
+          target_image: gentoo-amd64
           base_image: gentoo/stage3-amd64
         with:
           username: ${{ github.actor }}
