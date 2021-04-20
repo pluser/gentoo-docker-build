@@ -34,7 +34,7 @@ jobs:
     name: stage3-amd64-systemd
     runs-on: ubuntu-latest
     env:
-      image_name: stage3-amd64-systemd
+      image_name: stage3:amd64-systemd
     outputs:
       image: ${{ env.docker_registory }}/${{ github.repository }}/${{ env.image_name }}
     steps:
