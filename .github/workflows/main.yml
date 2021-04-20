@@ -1,6 +1,7 @@
 name: Build and Publish Gentoo Docker Image
 
 on:
+  push:
   schedule:
     - cron: '20 19 * * *'
 
