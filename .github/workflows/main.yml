@@ -34,7 +34,7 @@ jobs:
     name: stage3-amd64-systemd
     runs-on: ubuntu-latest
     env:
-      image_name: stage3:amd64-systemd
+      image_name: stage3-amd64-systemd
     outputs:
       image: ${{ env.docker_registory }}/${{ github.repository }}/${{ env.image_name }}
     steps:
@@ -55,10 +55,9 @@ jobs:
       - name: Push to GitHub Packages
         env:
           image_id: ${{ env.docker_registory }}/${{ github.repository }}/${{ env.image_name }}
-          org: gentoo
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${{ env.docker_registory }} -u ${{ github.actor }} --password-stdin
-          docker tag ${{ env.org }}/${{ env.image_name }} ${{ env.image_id }}:${{ env.date }}
+          docker tag gentoo/stage3:amd64-systemd ${{ env.image_id }}:${{ env.date }}
           docker tag ${{ env.image_id }}:${{ env.date }} ${{env.image_id}}:latest
           docker push ${{ env.image_id }}:${{ env.date }}
           docker push ${{ env.image_id }}:latest
