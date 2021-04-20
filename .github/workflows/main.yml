@@ -12,8 +12,8 @@ jobs:
     name: gentoo-amd64
     runs-on: ubuntu-latest
     steps:
-      - name: Get current date
-        run: echo "::set-env name=date::$(date +'%Y%m%d')"
+      - name: Set current date
+        run: echo "date=$(date +'%Y%m%d')" >> $GITHUB_ENV
       - name: Check out the repo
         uses: actions/checkout@v2
       - name: Build and Push to GitHub Packages
@@ -37,8 +37,8 @@ jobs:
     outputs:
       image: ${{ env.docker_registory }}/${{ github.repository }}/${{ env.image_name }}
     steps:
-      - name: Get current date
-        run: echo "::set-env name=date::$(date +'%Y%m%d')"
+      - name: Set current date
+        run: echo "date=$(date +'%Y%m%d')" >> $GITHUB_ENV
       - name: Check out the repo
         uses: actions/checkout@v2
         with:
@@ -68,8 +68,8 @@ jobs:
     needs: build_push_stage3-amd64-systemd
     runs-on: ubuntu-latest
     steps:
-      - name: Get current date
-        run: echo "::set-env name=date::$(date +'%Y%m%d')"
+      - name: Set current date
+        run: echo "date=$(date +'%Y%m%d')" >> $GITHUB_ENV
       - name: Check out the repo
         uses: actions/checkout@v2
       - name: Build and Push to GitHub Packages
